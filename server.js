@@ -16,7 +16,10 @@ async function getBrowserInstance() {
         if (browserInstance) {
             await browserInstance.close();
         }
-        browserInstance = await puppeteer.launch();
+        browserInstance = await puppeteer.launch({
+            args: ['--no-sandbox', '--disable-setuid-sandbox'],
+            headless: "new"
+        });
         requestCounter = 0; // Reset the request counter
     }
     requestCounter++;
@@ -42,7 +45,7 @@ app.post('/html-to-image', async (req, res) => {
 
         // Use sharp to trim or crop the image
         const trimmedImageBuffer = await sharp(imageBuffer)
-            .trim() // Automatically trim excess whitespace
+            .trim(0)
             .toBuffer();
 
         res.setHeader('Content-Type', 'image/png');
